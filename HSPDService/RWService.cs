@@ -106,6 +106,8 @@ namespace RWService
                 udpClient?.Close();
             }
 
+            var sendData = weight;
+
             if (weight.IndexOf('-') > 0)
             {
                 weight = "-" + weight.Replace("=", "").Replace("(kg)", "").Replace("ST,NT,", "").Replace("+", "").Replace("-", "").Replace("kg", "").Trim();
@@ -130,13 +132,16 @@ namespace RWService
 
                     weight = wg.ToString("0.###");
                 }
-                catch { }
+                catch
+                {
+                    //ignore
+                }
             }
 
 
             var infoMag = service.SetWeight(printId, float.Parse(weight));
             if (infoMag == 0) return;
-            _el.WriteEntry("重量记录写入失败:" + infoMag, EventLogEntryType.Error);
+            _el.WriteEntry($"重量记录写入失败:{infoMag},服务端接收数据:{sendData}", EventLogEntryType.Error);
         }
     }
 }
