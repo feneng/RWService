@@ -132,7 +132,7 @@ namespace RWService
 
                     weight = wg.ToString("0.###");
                 }
-                catch
+                catch (Exception)
                 {
                     //ignore
                 }
