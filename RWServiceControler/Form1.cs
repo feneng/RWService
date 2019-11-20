@@ -14,7 +14,7 @@ namespace RWServiceControler
         }
 
         private readonly string _serviceFilePath = $"{Application.StartupPath}\\RWService.exe";
-        private readonly string serviceName = "HSPD_RW_Service";
+        private readonly string serviceName = "HSPD_RW_Service02";
 
         private void Button1_Click(object sender, EventArgs e)
         {

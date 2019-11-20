@@ -11,7 +11,7 @@ namespace RWService
         {
             var servicesToRun = new ServiceBase[]
             {
-                new RwService()
+                new HSPD_RW_Service02()
             };
             ServiceBase.Run(servicesToRun);
         }

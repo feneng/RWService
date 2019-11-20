@@ -10,26 +10,25 @@ using System.Xml;
 
 namespace RWService
 {
-    public partial class RwService : ServiceBase
+    public partial class HSPD_RW_Service02 : ServiceBase
     {
         private EventLog _el;
+        private string _serviceSource = "";
         private string _webServiceUrl = "";
         private int _port;
+        private string _printId = "";
 
-        public RwService()
+        public HSPD_RW_Service02()
         {
             InitializeComponent();
         }
+
 
         protected override void OnStart(string[] args)
         {
             readWeight.Interval = 500;    //0.5秒写入一次
             readWeight.Enabled = true;
 
-            _el = new EventLog
-            {
-                Source = "HSPD SetWeight Service C02"
-            };
             try
             {
                 var xmlFileName = "Setting.xml";
@@ -39,7 +38,13 @@ namespace RWService
                     var xmlDoc = new XmlDocument();
                     xmlDoc.Load(path + "\\" + xmlFileName);
 
-                    var xmlNodeList = xmlDoc.GetElementsByTagName("WebServiceUrl");
+                    var xmlNodeList = xmlDoc.GetElementsByTagName("ServiceName");
+                    if (xmlNodeList.Count > 0)
+                    {
+                        _serviceSource = xmlNodeList[0].InnerText;
+                    }
+
+                    xmlNodeList = xmlDoc.GetElementsByTagName("WebServiceUrl");
                     if (xmlNodeList.Count > 0)
                     {
                         _webServiceUrl = xmlNodeList[0].InnerText;
@@ -51,10 +56,21 @@ namespace RWService
                         _port = int.Parse(xmlNodeList[0].InnerText);
                     }
 
-                    if (_webServiceUrl == "" || _port == 0)
+                    xmlNodeList = xmlDoc.GetElementsByTagName("PrintId");
+                    if (xmlNodeList.Count > 0)
+                    {
+                        _printId = xmlNodeList[0].InnerText;
+                    }
+
+                    if (string.IsNullOrEmpty(_webServiceUrl) || _port == 0||string.IsNullOrEmpty(_printId))
                     {
                         Stop();
                     }
+
+                    _el = new EventLog
+                    {
+                        Source = _serviceSource
+                    };
                 }
                 else
                 {
@@ -81,40 +97,56 @@ namespace RWService
             };
             try
             {
-                SetWeigh(17997, "C02", service);
+                SetWeigh(this._port, this._printId, service);
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
         }
 
-        private void SetWeigh(int port, string printId, WeighService.WeighService service)
+        private void SetWeigh(int port,string printId, WeighService.WeighService service)
         {
             string weight = "0";
 
             UdpClient udpClient = null;
             try
             {
-                udpClient = new UdpClient(port);
-                IPEndPoint ipEndpoint = null;
-                byte[] bytes = udpClient.Receive(ref ipEndpoint);
-                string data = Encoding.Default.GetString(bytes, 0, bytes.Length);
+                var remoteEndpoint = new IPEndPoint(IPAddress.Any, 0);
+                var localEndpoint = new IPEndPoint(Dns.GetHostAddresses(Dns.GetHostName())[1], port);
+                udpClient = new UdpClient(localEndpoint);
+                var receiveBytes = udpClient.Receive(ref remoteEndpoint);
+                string data = Encoding.Default.GetString(receiveBytes, 0, receiveBytes.Length);
                 weight = data;
-
-                udpClient.Close();
+                _el.WriteEntry($"获取到重量{data}", EventLogEntryType.Warning);
             }
             catch
+            {
+                return;
+            }
+            finally
             {
                 udpClient?.Close();
             }
 
-            var sendData = weight;
 
             if (weight.IndexOf('-') > 0)
             {
-                weight = "-" + weight.Replace("=", "").Replace("(kg)", "").Replace("ST,NT,", "").Replace("+", "").Replace("-", "").Replace("kg", "").Trim();
+                weight = "-" + weight.Replace("=", "")
+                             .Replace("(kg)", "")
+                             .Replace("ST,NT,", "")
+                             .Replace("+", "")
+                             .Replace("-", "")
+                             .Replace("kg", "").Trim();
             }
             else
             {
-                weight = weight.Replace("=", "").Replace("(kg)", "").Replace("ST,NT,", "").Replace("+", "").Replace("-", "").Replace("kg", "").Trim(); //ST,NT,+   9.75kg
+                weight = weight.Replace("=", "")
+                    .Replace("(kg)", "")
+                    .Replace("ST,NT,", "")
+                    .Replace("+", "")
+                    .Replace("-", "")
+                    .Replace("kg", "").Trim(); //ST,NT,+   9.75kg
             }
 
             if (weight.IndexOf('.') > 0)
@@ -132,7 +164,7 @@ namespace RWService
 
                     weight = wg.ToString("0.###");
                 }
-                catch (Exception)
+                catch
                 {
                     //ignore
                 }
@@ -141,7 +173,7 @@ namespace RWService
 
             var infoMag = service.SetWeight(printId, float.Parse(weight));
             if (infoMag == 0) return;
-            _el.WriteEntry($"重量记录写入失败:{infoMag},服务端接收数据:{sendData}", EventLogEntryType.Error);
+            _el.WriteEntry($"重量记录写入失败:{infoMag},服务端接收数据:{weight},客户端:{printId},端口:{port}", EventLogEntryType.Error);
         }
     }
 }

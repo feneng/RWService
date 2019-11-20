@@ -1,6 +1,6 @@
 ﻿namespace RWService
 {
-    partial class RwService
+    partial class HSPD_RW_Service02
     {
         /// <summary> 
         /// 必需的设计器变量。
@@ -36,9 +36,9 @@
             this.readWeight.Interval = 3000D;
             this.readWeight.Elapsed += new System.Timers.ElapsedEventHandler(this.GenUseList_Elapsed);
             // 
-            // RWService
+            // HSPD_RW_Service02
             // 
-            this.ServiceName = "HSJQ_RW_Service";
+            this.ServiceName = "HSPD_RW_Service02";
             ((System.ComponentModel.ISupportInitialize)(this.readWeight)).EndInit();
 
         }
