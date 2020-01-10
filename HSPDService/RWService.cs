@@ -7,10 +7,11 @@ using System.ServiceProcess;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using RWService.ServiceReference;
 
 namespace RWService
 {
-    public partial class HSPD_RW_Service02 : ServiceBase
+    public partial class HSJQ_RW_Service01 : ServiceBase
     {
         private EventLog _el;
         private string _serviceSource = "";
@@ -18,7 +19,7 @@ namespace RWService
         private int _port;
         private string _printId = "";
 
-        public HSPD_RW_Service02()
+        public HSJQ_RW_Service01()
         {
             InitializeComponent();
         }
@@ -90,11 +91,8 @@ namespace RWService
 
         private void GenUseList_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            var service = new WeighService.WeighService
-            {
-                Url = _webServiceUrl,
-                Timeout = 30000
-            };
+            var service = new ServiceReference.WeighServiceSoapClient();
+           
             try
             {
                 SetWeigh(this._port, this._printId, service);
@@ -105,7 +103,7 @@ namespace RWService
             }
         }
 
-        private void SetWeigh(int port,string printId, WeighService.WeighService service)
+        private void SetWeigh(int port,string printId, WeighServiceSoapClient service)
         {
             string weight = "0";
 
@@ -115,10 +113,11 @@ namespace RWService
                 var remoteEndpoint = new IPEndPoint(IPAddress.Any, 0);
                 var localEndpoint = new IPEndPoint(Dns.GetHostAddresses(Dns.GetHostName())[1], port);
                 udpClient = new UdpClient(localEndpoint);
+                //_el.WriteEntry($"创建UDP客户端成功", EventLogEntryType.Warning);
                 var receiveBytes = udpClient.Receive(ref remoteEndpoint);
                 string data = Encoding.Default.GetString(receiveBytes, 0, receiveBytes.Length);
                 weight = data;
-                _el.WriteEntry($"获取到重量{data}", EventLogEntryType.Warning);
+                //_el.WriteEntry($"获取到重量{data}", EventLogEntryType.Warning);
             }
             catch
             {
@@ -153,11 +152,17 @@ namespace RWService
             {
                 try
                 {
-                    string str = weight.Substring(weight.IndexOf('.') + 1, 1);
-                    if (int.Parse(str) <= 2)
-                    {
-                        weight = weight.Substring(0, weight.IndexOf('.'));
-                    }
+                    ////获取小数点后第1位小数
+                    //string str = weight.Substring(weight.IndexOf('.') + 1, 1);
+                    ////第一位小数大于2就保留小数，否则舍去小数，只保留整数
+                    //if (int.Parse(str) <= 2)
+                    //{
+                    //    weight = weight.Substring(0, weight.IndexOf('.'));
+                    //}
+
+                    //保留一位小数，第二位小数不管是多少都舍去
+                    weight = weight.Substring(0, weight.IndexOf('.')+2);
+
 
                     double wg = double.Parse(weight) * 10;
                     wg = Math.Floor(wg) * 0.1;
@@ -172,8 +177,8 @@ namespace RWService
 
 
             var infoMag = service.SetWeight(printId, float.Parse(weight));
-            if (infoMag == 0) return;
-            _el.WriteEntry($"重量记录写入失败:{infoMag},服务端接收数据:{weight},客户端:{printId},端口:{port}", EventLogEntryType.Error);
+            //if (infoMag == 0) return;
+            //_el.WriteEntry($"重量记录写入失败:{infoMag},服务端接收数据:{weight},客户端:{printId},端口:{port}", EventLogEntryType.Error);
         }
     }
 }

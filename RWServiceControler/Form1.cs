@@ -14,12 +14,11 @@ namespace RWServiceControler
         }
 
         private readonly string _serviceFilePath = $"{Application.StartupPath}\\RWService.exe";
-        private readonly string serviceName = "HSPD_RW_Service02";
 
         private void Button1_Click(object sender, EventArgs e)
         {
             label1.Text = "服务安装中...";
-            if (IsServiceExisted(serviceName))
+            if (IsServiceExisted(textBox1.Text.Trim()))
             {
                 UninstallService(_serviceFilePath);
             }
@@ -31,23 +30,23 @@ namespace RWServiceControler
         private void Button2_Click(object sender, EventArgs e)
         {
             label1.Text = "服务启动中...";
-            if (this.IsServiceExisted(serviceName)) this.ServiceStart(serviceName);
+            if (this.IsServiceExisted(textBox1.Text.Trim())) this.ServiceStart(textBox1.Text.Trim());
             label1.Text = "服务启动完成！";
         }
 
         private void Button3_Click(object sender, EventArgs e)
         {
             label1.Text = "服务停止中...";
-            if (this.IsServiceExisted(serviceName)) this.ServiceStop(serviceName);
+            if (this.IsServiceExisted(textBox1.Text.Trim())) this.ServiceStop(textBox1.Text.Trim());
             label1.Text = "服务停止完成！";
         }
 
         private void Button4_Click(object sender, EventArgs e)
         {
             label1.Text = "服务卸载中...";
-            if (this.IsServiceExisted(serviceName))
+            if (this.IsServiceExisted(textBox1.Text.Trim()))
             {
-                this.ServiceStop(serviceName);
+                this.ServiceStop(textBox1.Text.Trim());
                 this.UninstallService(_serviceFilePath);
             }
             label1.Text = "服务卸载完成！";
@@ -112,6 +111,16 @@ namespace RWServiceControler
                     control.Stop();
                 }
             }
+        }
+
+        private void Label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void TextBox1_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

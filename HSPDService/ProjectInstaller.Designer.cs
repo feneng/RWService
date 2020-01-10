@@ -40,9 +40,9 @@
             // 
             // serviceInstaller1
             // 
-            this.serviceInstaller1.Description = "获取电子秤重量";
-            this.serviceInstaller1.DisplayName = "HSPD_RW_Service02";
-            this.serviceInstaller1.ServiceName = "HSPD_RW_Service02";
+            this.serviceInstaller1.Description = "获取电子秤重量01(假期)";
+            this.serviceInstaller1.DisplayName = "HSJQ_RW_Service01";
+            this.serviceInstaller1.ServiceName = "HSJQ_RW_Service01";
             this.serviceInstaller1.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
             this.serviceInstaller1.AfterInstall += new System.Configuration.Install.InstallEventHandler(this.ServiceInstaller1_AfterInstall);
             // 

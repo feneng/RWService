@@ -22,15 +22,5 @@ namespace RWService.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://120.79.19.165/HSPD/api/WeighService.asmx")]
-        public string RWService_WeighService_WeighService {
-            get {
-                return ((string)(this["RWService_WeighService_WeighService"]));
-            }
-        }
     }
 }

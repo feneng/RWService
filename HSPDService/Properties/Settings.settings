@@ -1,9 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="RWService.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
   <Profiles />
-  <Settings>
-    <Setting Name="RWService_WeighService_WeighService" Type="(Web Service URL)" Scope="Application">
-      <Value Profile="(Default)">http://120.79.19.165/HSPD/api/WeighService.asmx</Value>
-    </Setting>
-  </Settings>
+  <Settings />
 </SettingsFile>

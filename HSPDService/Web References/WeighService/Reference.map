@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<DiscoveryClientResultsFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Results>
-    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="http://120.79.19.165/HSPD/api/WeighService.asmx?wsdl" filename="WeighService.wsdl" />
-    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.DiscoveryDocumentReference" url="http://120.79.19.165/HSPD/api/WeighService.asmx?disco" filename="WeighService.disco" />
-  </Results>
-</DiscoveryClientResultsFile>

@@ -99,10 +99,10 @@
   </wsdl:binding>
   <wsdl:service name="WeighService">
     <wsdl:port name="WeighServiceSoap" binding="tns:WeighServiceSoap">
-      <soap:address location="http://120.79.19.165/HSPD/api/WeighService.asmx" />
+      <soap:address location="http://120.79.19.165/HSJQ/api/WeighService.asmx" />
     </wsdl:port>
     <wsdl:port name="WeighServiceSoap12" binding="tns:WeighServiceSoap12">
-      <soap12:address location="http://120.79.19.165/HSPD/api/WeighService.asmx" />
+      <soap12:address location="http://120.79.19.165/HSJQ/api/WeighService.asmx" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>
